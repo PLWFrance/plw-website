@@ -1,0 +1,11 @@
+---
+import { getCollection, render } from 'astro:content';
+import VenueLayout from '../../layouts/VenueLayout.astro';
+export async function getStaticPaths() {
+  const venues = await getCollection('venues');
+  return venues.map(venue => ({ params: { id: venue.id }, props: { venue } }));
+}
+const { venue } = Astro.props;
+const { Content } = await render(venue);
+---
+<VenueLayout venue={venue}><Content /></VenueLayout>
