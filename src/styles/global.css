@@ -1,0 +1,324 @@
+:root {
+  --paper:#faf7ef;
+  --ink:#343d30;
+  --olive:#48563f;
+  --muted:#656859;
+  --line:#d4d3c5;
+  --soft:#eeeee4;
+  font-family:Arial,Helvetica,sans-serif;
+  color:var(--ink);
+  background:var(--paper);
+  font-synthesis:none}
+* {
+  box-sizing:border-box}
+html {
+  scroll-behavior:smooth;
+  scroll-padding-top:2rem}
+body {
+  margin:0}
+a {
+  color:inherit;
+  text-underline-offset:6px}
+a:hover {
+  color:#74613f}
+a:focus-visible {
+  outline:3px solid #8b5c36;
+  outline-offset:6px}
+p {
+  line-height:1.75}
+h1,h2,h3 {
+  font-family:Georgia,'Times New Roman',serif;
+  font-weight:400;
+  line-height:1.06;
+  letter-spacing:-.045em;
+  margin:0 0 1.5rem}
+h1 {
+  font-size:clamp(3.8rem,6.5vw,6.6rem)}
+h2 {
+  font-size:clamp(2.8rem,4.5vw,4.5rem)}
+h3 {
+  font-size:2.8rem}
+em {
+  font-weight:400;
+  color:#6e795f}
+.wrap {
+  width:min(1280px,88%);
+  margin-inline:auto}
+.prototype-note {
+  background:var(--olive);
+  color:var(--paper);
+  text-align:center;
+  font-size:.69rem;
+  letter-spacing:.1em;
+  padding:.65rem 1rem;
+  line-height:1.5}
+.site-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding-block:1.7rem;
+  gap:2rem}
+.brand {
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  gap:1rem;
+  font-family:Georgia,serif;
+  font-size:.95rem}
+.monogram {
+  font-size:2.1rem;
+  letter-spacing:-.08em;
+  white-space:nowrap}
+.monogram span {
+  font-size:1.4rem;
+  vertical-align:top;
+  margin-left:.35rem}
+nav {
+  display:flex;
+  gap:2rem;
+  font-size:.78rem}
+nav a {
+  text-decoration:none}
+nav a:hover {
+  text-decoration:underline}
+.hero {
+  display:grid;
+  grid-template-columns:1fr 1.04fr;
+  gap:5%;
+  padding:2rem 0 5rem;
+  align-items:center}
+.eyebrow {
+  text-transform:uppercase;
+  font-size:.65rem;
+  letter-spacing:.18em;
+  line-height:1.6;
+  margin:0 0 1.7rem}
+.intro {
+  font-size:1.05rem;
+  max-width:370px}
+.button {
+  display:inline-flex;
+  gap:3rem;
+  background:var(--olive);
+  color:var(--paper);
+  padding:1.15rem 1.5rem;
+  text-decoration:none;
+  font-size:.8rem;
+  margin-top:1.5rem}
+.button:hover {
+  background:#35412f;
+  color:white}
+.small {
+  font-size:.72rem;
+  color:var(--muted)}
+.hero-caption {
+  margin-top:2.3rem}
+.hero-image {
+  position:relative}
+.placeholder {
+  margin:0}
+.placeholder img {
+  display:block;
+  width:100%;
+  height:auto;
+  object-fit:cover;
+  background:#d9c6a5}
+.hero-image img {
+  aspect-ratio:4/5;
+  object-fit:cover;
+  border-radius:48% 48% 0 0}
+.placeholder figcaption {
+  font-size:.62rem;
+  letter-spacing:.04em;
+  color:var(--muted);
+  margin-top:.65rem}
+.image-note {
+  position:absolute;
+  bottom:3.4rem;
+  right:-1rem;
+  background:var(--paper);
+  padding:1.2rem 1.7rem;
+  font-family:Georgia,serif;
+  font-style:italic;
+  font-size:1.3rem;
+  line-height:1.3}
+.approach {
+  border-top:1px solid var(--line);
+  padding-block:5rem 6rem}
+.two-column {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10%}
+.two-column p:first-child {
+  margin-top:0}
+.large-copy {
+  font-family:Georgia,serif;
+  font-size:1.8rem;
+  line-height:1.4}
+.two-column p:not(.large-copy) {
+  max-width:490px;
+  font-size:.9rem}
+.venue-section {
+  background:var(--soft);
+  padding-block:5rem}
+.section-heading {
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:2rem;
+  margin-bottom:2rem}
+.venue-card {
+  display:grid;
+  grid-template-columns:1.2fr 1fr;
+  gap:7%;
+  align-items:center}
+.venue-image-link {
+  text-decoration:none}
+.venue-card img {
+  aspect-ratio:4/3}
+.venue-copy {
+  padding-block:2rem}
+.tag {
+  display:inline-block;
+  padding:.5rem .7rem;
+  border:1px solid #a4aa96;
+  text-transform:uppercase;
+  font-size:.58rem;
+  letter-spacing:.12em;
+  line-height:1.5}
+.venue-copy .eyebrow {
+  margin:2rem 0 1rem}
+.venue-copy p:not(.eyebrow) {
+  font-size:.9rem;
+  max-width:350px}
+.text-link {
+  display:inline-block;
+  font-size:.8rem;
+  margin-top:1rem}
+.text-link span {
+  margin-left:2rem}
+.next-chapter {
+  text-align:center;
+  padding-block:6rem}
+.next-chapter p:not(.eyebrow) {
+  font-size:.9rem}
+.next-chapter .tag {
+  margin-top:1.5rem}
+.site-footer {
+  background:var(--olive);
+  color:var(--paper);
+  padding-block:3rem}
+.footer-inner {
+  display:flex;
+  justify-content:space-between;
+  gap:2rem}
+.footer-brand {
+  font-family:Georgia,serif;
+  font-size:1.65rem;
+  text-decoration:none}
+.site-footer p,.site-footer a:not(.footer-brand) {
+  font-size:.7rem}
+.site-footer a:hover {
+  color:#fff}
+.skip-link {
+  position:absolute;
+  top:-100px;
+  left:1rem;
+  padding:1rem;
+  background:var(--paper);
+  z-index:10}
+.skip-link:focus {
+  top:1rem}
+.venue-detail {
+  padding-block:1rem 5rem}
+.venue-title {
+  max-width:850px;
+  margin:3rem auto;
+  text-align:center}
+.venue-title .eyebrow {
+  margin-top:2rem}
+.venue-title h1 {
+  font-size:clamp(3rem,6vw,6rem)}
+.venue-title .intro {
+  max-width:650px;
+  margin-inline:auto}
+.venue-detail>.placeholder img {
+  max-height:650px;
+  object-fit:cover}
+.venue-body {
+  display:grid;
+  grid-template-columns:1fr 2fr;
+  gap:10%;
+  padding-top:4rem}
+.venue-body dt {
+  font-size:.7rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-top:1.6rem}
+.venue-body dd {
+  margin:.6rem 0;
+  font-size:.9rem;
+  line-height:1.6}
+.prose h2 {
+  font-size:2.4rem;
+  margin-top:2rem}
+.prose h2:first-child {
+  margin-top:0}
+.prose p {
+  font-size:.95rem}
+@media(max-width:700px) {
+  .site-header {
+  flex-direction:column;
+  gap:1rem;
+  padding-block:1.2rem}
+nav {
+  gap:1.3rem;
+  font-size:.7rem}
+.hero {
+  grid-template-columns:1fr;
+  padding-top:2rem;
+  gap:2rem}
+.hero-copy {
+  max-width:500px}
+.hero h1 {
+  font-size:clamp(3.7rem,12vw,5.5rem)}
+.hero-image {
+  max-width:500px;
+  width:100%;
+  margin-inline:auto}
+.hero-image img {
+  aspect-ratio:1}
+.image-note {
+  right:-.5rem;
+  font-size:1.1rem}
+.two-column,.venue-card,.venue-body {
+  grid-template-columns:1fr;
+  gap:1.5rem}
+.approach,.venue-section {
+  padding-block:3rem}
+.section-heading {
+  display:block}
+.section-heading>.small {
+  display:block;
+  margin-bottom:1rem}
+.venue-copy {
+  padding-top:0}
+.footer-inner {
+  flex-direction:column}
+.next-chapter {
+  padding-block:4rem}
+.venue-body {
+  padding-top:2rem}
+.venue-body aside {
+  border-bottom:1px solid var(--line);
+  padding-bottom:1rem}
+.venue-title {
+  margin-block:2rem}
+.venue-title h1 {
+  overflow-wrap:break-word}
+}
+@media(prefers-reduced-motion:reduce) {
+  html {
+  scroll-behavior:auto}
+}
+
