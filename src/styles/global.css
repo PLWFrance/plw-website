@@ -322,3 +322,15 @@ nav {
   scroll-behavior:auto}
 }
 
+/* Structured venue content reuses the prototype's palette and typography. */
+.content-text { white-space: pre-line; }
+.prose li { line-height: 1.75; margin-block: .4rem; }
+.prose dt { font-weight: 600; margin-top: 1.5rem; }
+.prose dd { margin: .5rem 0 1.5rem; line-height: 1.75; }
+.prose .offer-title { font-size: 1.7rem; letter-spacing: -.025em; margin-bottom: .5rem; }
+.venue-media { padding-top: 4rem; }
+.venue-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; }
+.venue-gallery img { aspect-ratio: 6 / 5; object-fit: cover; }
+.venue-video { max-width: 600px; }
+.venue-video img { aspect-ratio: 16 / 9; object-fit: cover; }
+@media (max-width: 700px) { .venue-gallery { grid-template-columns: 1fr; } }

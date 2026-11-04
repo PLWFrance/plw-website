@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1000" viewBox="0 0 1200 1000" role="img" aria-label="Placeholder illustration, not a real venue">
+<defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#cbd5cb"/><stop offset="1" stop-color="#eee6d5"/></linearGradient><linearGradient id="wall" x2="1" y2="1"><stop stop-color="#d9c6a5"/><stop offset="1" stop-color="#ae9473"/></linearGradient></defs>
+<path fill="url(#sky)" d="M0 0h1200v1000H0z"/><circle cx="925" cy="190" r="96" fill="#f5ecce"/>
+<path fill="#c6b494" d="M0 440 360 300l370 140v420H0z"/><path fill="url(#wall)" d="M445 230h590v630H445z"/><path fill="#e5d4b7" d="M418 230h646v35H418z"/>
+<path fill="#797d68" d="M628 860V500a125 125 0 0 1 250 0v360z"/><path fill="#a1ae94" d="M658 860V505a95 95 0 0 1 190 0v355z"/>
+<path fill="#e9ddc4" d="M0 800h1200v200H0z"/><path fill="#d4c5aa" d="m0 1000 660-200h150l390 200z"/>
+<g stroke="#706b50" stroke-width="16" fill="none"><path d="M210 850 195 410m0 185-85-105m88 15 105-120M1040 855l-6-420m0 165 95-115m-90 45-90-130"/></g>
+<g fill="#78856a"><ellipse cx="160" cy="415" rx="150" ry="104"/><ellipse cx="254" cy="353" rx="120" ry="110"/><ellipse cx="1010" cy="410" rx="117" ry="128"/><ellipse cx="1107" cy="423" rx="100" ry="85"/></g><g fill="#909b7a" opacity=".7"><ellipse cx="124" cy="365" rx="85" ry="53"/><ellipse cx="258" cy="310" rx="81" ry="60"/><ellipse cx="1037" cy="350" rx="86" ry="61"/></g>
+<path fill="#aa795e" d="M131 800h155l-23 120H154zM978 810h128l-20 108h-88z"/>
+<ellipse cx="640" cy="896" rx="200" ry="40" fill="#bcae91"/><path fill="#eee7d7" d="m450 829 290-20 105 64-310 28z"/><path fill="#ddd2be" d="m535 901 310-28v60l-310 30z"/><path stroke="#777d5e" stroke-width="10" d="m551 850 180-14"/>
+<text x="40" y="970" font-family="sans-serif" font-size="20" letter-spacing="3" fill="#514b40">PLW · PLACEHOLDER ILLUSTRATION · NOT A REAL VENUE</text></svg>

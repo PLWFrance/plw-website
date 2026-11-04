@@ -3,7 +3,26 @@ name: Maison des Oliviers
 region: An imagined corner of southern France
 summary: An olive-lined courtyard, soft stone and a long table beneath the evening sky. A fictional setting for a small celebration.
 fictional: true
-image: /images/courtyard-placeholder.svg
+published: true
+featured: true
+slug: maison-des-oliviers
+location: Fictional location — not a real address
+imagePlaceholder: true
+gallery: []
+video: {}
+facilities: []
+amenities: []
+accommodation: {}
+ceremonyOptions: []
+keyInformation:
+  - label: Sample content
+    value: This invented setting demonstrates the content model and cannot be booked.
+additionalInformation: No real venue facilities, capacities or accommodation have been verified.
+specialOffers: []
+seo:
+  title: Maison des Oliviers — fictional sample
+  description: An explicitly fictional venue example for the Perfect Little Wedding website prototype.
+image: /images/venues/courtyard-placeholder.svg
 imageAlt: Placeholder illustration of an imagined French courtyard, not a real venue
 setting: Countryside courtyard — fictional
 atmosphere: Quiet, natural and unhurried — illustrative

@@ -1,0 +1,228 @@
+# Pages CMS hosted app; repository/branch is selected in its UI, not here.
+media:
+  input: public/images/venues
+  output: /images/venues
+  extensions: [jpg, jpeg, png, webp, avif, svg]
+  rename: safe
+settings:
+  content:
+    merge: true
+content:
+  - name: venues
+    label: Wedding venues
+    type: collection
+    path: src/content/venues
+    format: yaml-frontmatter
+    subfolders: false
+    filename: '{fields.slug}.md'
+    view:
+      primary: name
+      fields: [name, region, published, featured]
+      search: [name, region, location]
+      sort: [name, region, published, featured]
+      default:
+        sort: name
+        order: asc
+    fields:
+      - name: name
+        label: Venue name
+        type: string
+        required: true
+      - name: slug
+        label: URL slug
+        type: string
+        required: true
+        description: 'Unique lowercase words with hyphens, e.g. maison-des-oliviers. Changing this changes the page address; ask for a redirect before renaming a published venue.'
+        pattern:
+          regex: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+          message: Use lowercase letters, numbers and single hyphens between words.
+      - name: published
+        label: Published in builds
+        type: boolean
+        default: false
+        description: 'Off = draft, excluded from website pages and listings. Saving still commits to GitHub. On makes it eligible for the next build; it does not deploy or publish a website.'
+      - name: featured
+        label: Featured venue
+        type: boolean
+        default: false
+        description: Featured venues appear first in the homepage venue list, but drafts stay hidden.
+      - name: fictional
+        label: Fictional sample venue
+        type: boolean
+        default: true
+        description: Leave on for all invented examples. Turn off only for verified, approved real venue content.
+      - name: summary
+        label: Short description
+        type: text
+        required: true
+        description: Plain-text introduction used on the venue page and venue card.
+      - name: body
+        label: Full venue description
+        type: rich-text
+        options:
+          format: markdown
+          media: false
+        description: 'Use paragraphs, headings and lists. Add photographs through the gallery below. Do not paste scripts, embedded videos or raw HTML.'
+      - name: region
+        label: Region
+        type: string
+        required: true
+        description: Enter the verified French region, or clearly say that the setting is imagined.
+      - name: location
+        label: Location
+        type: string
+        description: Town or area. Do not add private addresses without permission.
+      - name: setting
+        label: Setting
+        type: string
+      - name: atmosphere
+        label: Atmosphere
+        type: string
+      - name: image
+        label: Main photograph
+        type: image
+        required: true
+        description: Upload or choose an approved image. For testing, use the existing local placeholder path; never imply it depicts a real venue.
+      - name: imageAlt
+        label: Main photograph description (alt text)
+        type: string
+        required: true
+      - name: imagePlaceholder
+        label: Main image is a placeholder
+        type: boolean
+        default: true
+      - name: gallery
+        label: Image gallery
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: '{fields.alt}'
+        fields:
+          - name: image
+            label: Photograph
+            type: image
+            required: true
+          - name: alt
+            label: Photograph description (alt text)
+            type: string
+            required: true
+          - name: caption
+            label: Caption or image credit
+            type: string
+          - name: placeholder
+            label: Image is a placeholder
+            type: boolean
+            default: true
+      - name: video
+        label: Video
+        type: object
+        fields:
+          - name: url
+            label: Video URL
+            type: string
+            description: 'Full HTTPS link. Displayed as a link, never embedded or automatically played.'
+            pattern: '^(https://[^\s]+)?$'
+          - name: thumbnail
+            label: Video thumbnail
+            type: image
+          - name: thumbnailAlt
+            label: Thumbnail description (required when an image is chosen)
+            type: string
+          - name: placeholder
+            label: Thumbnail is a placeholder
+            type: boolean
+            default: true
+      - name: externalGalleryUrl
+        label: External gallery URL
+        type: string
+        pattern: '^(https://[^\s]+)?$'
+        description: Optional full HTTPS link to an approved external gallery.
+      - name: facilities
+        label: Facilities
+        type: string
+        list: true
+        description: Add one confirmed facility per item. Leave unknown information blank.
+      - name: amenities
+        label: Amenities
+        type: select
+        options:
+          multiple: true
+          values: [Swimming pool, Parking, Wi-Fi, Step-free access]
+        description: Select only confirmed amenities; use key information for accessibility details.
+      - name: guestCapacity
+        label: Maximum wedding guests
+        type: number
+        options:
+          min: 0
+        description: Whole number only. Leave blank if not verified; zero means none.
+      - name: accommodation
+        label: Accommodation
+        type: object
+        fields:
+          - name: sleeps
+            label: Overnight guests
+            type: number
+            options:
+              min: 0
+          - name: bedrooms
+            label: Bedrooms
+            type: number
+            options:
+              min: 0
+          - name: details
+            label: Accommodation details
+            type: text
+      - name: ceremonyOptions
+        label: Ceremony options
+        type: select
+        options:
+          multiple: true
+          values: [Symbolic ceremony, Religious ceremony, Civil ceremony (verify legal eligibility)]
+        description: Select only verified options. Civil ceremonies in France require separate legal confirmation.
+      - name: ceremonyDetails
+        label: Ceremony details
+        type: text
+      - name: keyInformation
+        label: Key information
+        type: object
+        list: true
+        fields:
+          - name: label
+            label: Heading
+            type: string
+            required: true
+          - name: value
+            label: Details
+            type: text
+            required: true
+      - name: additionalInformation
+        label: Additional information
+        type: text
+        description: Plain-text details. Line breaks are preserved.
+      - name: specialOffers
+        label: Special offers
+        type: object
+        list: true
+        description: Only approved, current offers. Remove expired offers manually; nothing expires automatically.
+        fields:
+          - name: title
+            label: Offer heading
+            type: string
+            required: true
+          - name: description
+            label: Offer details and terms
+            type: text
+            required: true
+      - name: seo
+        label: Search engine information
+        type: object
+        fields:
+          - name: title
+            label: SEO title
+            type: string
+            description: Optional. Falls back to the venue name; the website adds the PLW name.
+          - name: description
+            label: SEO description
+            type: text
+            description: Optional. Falls back to the short description. Prototype pages remain noindex.
