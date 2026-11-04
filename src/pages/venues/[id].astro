@@ -1,9 +1,10 @@
 ---
 import { getCollection, render } from 'astro:content';
+import { publishedVenues, venueSlug } from '../../lib/venues';
 import VenueLayout from '../../layouts/VenueLayout.astro';
 export async function getStaticPaths() {
-  const venues = await getCollection('venues');
-  return venues.map(venue => ({ params: { id: venue.id }, props: { venue } }));
+  const venues = publishedVenues(await getCollection('venues'));
+  return venues.map(venue => ({ params: { id: venueSlug(venue) }, props: { venue } }));
 }
 const { venue } = Astro.props;
 const { Content } = await render(venue);

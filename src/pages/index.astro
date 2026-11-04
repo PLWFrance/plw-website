@@ -1,8 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
+import { publishedVenues, venueSlug } from '../lib/venues';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PlaceholderImage from '../components/PlaceholderImage.astro';
-const venues = await getCollection('venues');
+const venues = publishedVenues(await getCollection('venues'));
 ---
 <BaseLayout title="A little wedding. A whole lot of love." description="A first-look prototype for Perfect Little Wedding, specialising in intimate weddings in France.">
   <section class="hero wrap">
@@ -10,6 +11,6 @@ const venues = await getCollection('venues');
     <div class="hero-image"><PlaceholderImage src="/images/courtyard-placeholder.svg" alt="Placeholder illustration of a sunlit courtyard with an arch and olive trees" eager /><span class="image-note">A slower pace.<br />A closer kind of celebration.</span></div>
   </section>
   <section id="approach" class="approach wrap"><p class="eyebrow">Small by choice. Meaningful by nature.</p><div class="two-column"><h2>Space for what<br /><em>really matters.</em></h2><div><p class="large-copy">A wedding does not need to be big to feel extraordinary.</p><p>Perfect Little Wedding specialises in intimate weddings in France. This first look explores a simple idea: fewer distractions, more connection, and a setting that makes time together feel special.</p><p class="small">Design direction for discussion. Details of the planning service will follow approved business content.</p></div></div></section>
-  <section id="venues" class="venue-section"><div class="wrap"><div class="section-heading"><div><p class="eyebrow">A sense of place</p><h2>Somewhere to <em>fall in love.</em></h2></div><span class="small">01 / An imagined setting</span></div>{venues.map(venue => <article class="venue-card"><a class="venue-image-link" href={`/venues/${venue.id}/`} aria-label={`Explore ${venue.data.name}, fictional sample venue`}><PlaceholderImage src={venue.data.image} alt={venue.data.imageAlt} /></a><div class="venue-copy"><span class="tag">Fictional sample venue</span><p class="eyebrow">{venue.data.region}</p><h3>{venue.data.name}</h3><p>{venue.data.summary}</p><a class="text-link" href={`/venues/${venue.id}/`}>Explore the sample <span aria-hidden="true">↗</span></a></div></article>)}</div></section>
+  <section id="venues" class="venue-section"><div class="wrap"><div class="section-heading"><div><p class="eyebrow">A sense of place</p><h2>Somewhere to <em>fall in love.</em></h2></div><span class="small">Venues to explore</span></div>{venues.length === 0 && <p>More venue details will follow.</p>}{venues.map(venue => <article class="venue-card"><a class="venue-image-link" href={`/venues/${venueSlug(venue)}/`} aria-label={`Explore ${venue.data.name}${venue.data.fictional ? ", fictional sample venue" : ""}`}><PlaceholderImage src={venue.data.image} alt={venue.data.imageAlt} placeholder={venue.data.imagePlaceholder} /></a><div class="venue-copy">{venue.data.fictional && <span class="tag">Fictional sample venue</span>}<p class="eyebrow">{venue.data.region}</p><h3>{venue.data.name}</h3><p>{venue.data.summary}</p><a class="text-link" href={`/venues/${venueSlug(venue)}/`}>{venue.data.fictional ? "Explore the sample" : "Explore the venue"} <span aria-hidden="true">↗</span></a></div></article>)}</div></section>
   <section id="next-chapter" class="next-chapter wrap"><p class="eyebrow">The beginning of something lovely</p><h2>Your people.<br />Your pace. <em>Your day.</em></h2><p>This is the first chapter of the new PLW website.<br />More places, stories and planning details will follow.</p><span class="tag">Prototype only · Enquiries are not open here</span></section>
 </BaseLayout>

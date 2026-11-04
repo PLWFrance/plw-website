@@ -5,11 +5,43 @@ import PlaceholderImage from '../components/PlaceholderImage.astro';
 interface Props { venue: CollectionEntry<'venues'>; }
 const { venue: { data } } = Astro.props;
 ---
-<BaseLayout title={`${data.name}${data.fictional ? ' — fictional sample' : ''}`} description={data.summary}>
+<BaseLayout title={data.seo.title || `${data.name}${data.fictional ? ' — fictional sample' : ''}`} description={data.seo.description || data.summary}>
   <article class="wrap venue-detail">
     <a class="text-link" href="/#venues">← Back to venues</a>
-    <header class="venue-title">{data.fictional && <span class="tag">Fictional sample venue · Not available to book</span>}<p class="eyebrow">{data.region}</p><h1>{data.name}</h1><p class="intro">{data.summary}</p></header>
-    <PlaceholderImage src={data.image} alt={data.imageAlt} eager />
-    <div class="venue-body"><aside aria-label="Illustrative venue details"><p class="eyebrow">At a glance</p><dl><dt>Setting</dt><dd>{data.setting}</dd><dt>Atmosphere</dt><dd>{data.atmosphere}</dd><dt>Booking information</dt><dd>Not applicable to this fictional sample</dd></dl></aside><div class="prose"><slot /></div></div>
+    <header class="venue-title">
+      {data.fictional && <span class="tag">Fictional sample venue · Not available to book</span>}
+      <p class="eyebrow">{data.region}</p><h1>{data.name}</h1>
+      {data.location && <p>{data.location}</p>}
+      <p class="intro">{data.summary}</p>
+    </header>
+    <PlaceholderImage src={data.image} alt={data.imageAlt} placeholder={data.imagePlaceholder} eager />
+    <div class="venue-body">
+      <aside aria-label="Venue details">
+        <p class="eyebrow">At a glance</p>
+        <dl>
+          {data.setting && <><dt>Setting</dt><dd>{data.setting}</dd></>}
+          {data.atmosphere && <><dt>Atmosphere</dt><dd>{data.atmosphere}</dd></>}
+          {data.guestCapacity !== undefined && <><dt>Maximum wedding guests</dt><dd>{data.guestCapacity}</dd></>}
+          {data.accommodation.sleeps !== undefined && <><dt>Overnight guests</dt><dd>{data.accommodation.sleeps}</dd></>}
+          {data.accommodation.bedrooms !== undefined && <><dt>Bedrooms</dt><dd>{data.accommodation.bedrooms}</dd></>}
+          {data.fictional && <><dt>Booking information</dt><dd>Not applicable to this fictional sample</dd></>}
+        </dl>
+      </aside>
+      <div class="prose">
+        <slot />
+        {data.facilities.length > 0 && <section><h2>Facilities</h2><ul>{data.facilities.map(item => <li>{item}</li>)}</ul></section>}
+        {data.amenities.length > 0 && <section><h2>Amenities</h2><ul>{data.amenities.map(item => <li>{item}</li>)}</ul></section>}
+        {data.accommodation.details && <section><h2>Accommodation</h2><p class="content-text">{data.accommodation.details}</p></section>}
+        {(data.ceremonyOptions.length > 0 || data.ceremonyDetails) && <section><h2>Ceremony options</h2>{data.ceremonyOptions.length > 0 && <ul>{data.ceremonyOptions.map(item => <li>{item}</li>)}</ul>}{data.ceremonyDetails && <p class="content-text">{data.ceremonyDetails}</p>}</section>}
+        {data.keyInformation.length > 0 && <section><h2>Key information</h2><dl>{data.keyInformation.map(item => <><dt>{item.label}</dt><dd class="content-text">{item.value}</dd></>)}</dl></section>}
+        {data.additionalInformation && <section><h2>Additional information</h2><p class="content-text">{data.additionalInformation}</p></section>}
+        {data.specialOffers.length > 0 && <section><h2>Special offers</h2>{data.specialOffers.map(offer => <div><h3 class="offer-title">{offer.title}</h3><p class="content-text">{offer.description}</p></div>)}</section>}
+      </div>
+    </div>
+    {data.gallery.length > 0 && <section class="venue-media" aria-labelledby="gallery-title"><h2 id="gallery-title">A closer look</h2><div class="venue-gallery">{data.gallery.map(item => <PlaceholderImage src={item.image} alt={item.alt} caption={item.caption} placeholder={item.placeholder} />)}</div></section>}
+    {(data.video.url || data.externalGalleryUrl) && <section class="venue-media" aria-labelledby="more-title"><h2 id="more-title">Explore more</h2>
+      {data.video.url && <div class="venue-video">{data.video.thumbnail && <PlaceholderImage src={data.video.thumbnail} alt={data.video.thumbnailAlt} placeholder={data.video.placeholder} />}<a class="text-link" href={data.video.url} rel="noopener noreferrer">Watch the venue video on the external website ↗</a></div>}
+      {data.externalGalleryUrl && <p><a class="text-link" href={data.externalGalleryUrl} rel="noopener noreferrer">View the external image gallery ↗</a></p>}
+    </section>}
   </article>
 </BaseLayout>
