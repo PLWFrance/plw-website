@@ -13,7 +13,9 @@
     "build": "npm run validate:content && astro build",
     "preview": "astro preview",
     "validate:content": "node scripts/validate-content.mjs",
-    "test": "node --test scripts/venue-content.test.mjs"
+    "test": "node --test scripts/venue-content.test.mjs",
+    "sync:features": "node scripts/sync-venue-features.mjs",
+    "validate:cms:upstream": "node scripts/validate-cms-upstream.mjs"
   },
   "dependencies": {
     "astro": "^7.4.5"

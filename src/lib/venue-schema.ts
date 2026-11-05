@@ -1,4 +1,6 @@
 import { z } from 'astro/zod';
+import { amenities } from './venue-features.ts';
+export { amenities } from './venue-features.ts';
 
 const optionalText = z.preprocess(value => value == null ? '' : value, z.string().trim().default(''));
 const optionalNumber = z.preprocess(
@@ -14,7 +16,6 @@ const optionalUrl = z.preprocess(value => value == null ? '' : value,
   z.union([z.url({ protocol: /^https$/ }), z.literal('')]).default(''));
 const list = <T extends z.ZodType>(item: T) => z.preprocess(value => value == null ? [] : value, z.array(item).default([]));
 
-export const amenities = ['Swimming pool', 'Parking', 'Wi-Fi', 'Step-free access'] as const;
 export const ceremonyOptions = ['Symbolic ceremony', 'Religious ceremony', 'Civil ceremony (verify legal eligibility)'] as const;
 
 export const venueSchema = z.object({

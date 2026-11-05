@@ -1,0 +1,9 @@
+{
+  "categories": ["Accommodation", "Facilities", "Activities", "Accessibility", "Wedding arrangements"],
+  "features": [
+    { "value": "Swimming pool", "label": "Swimming pool", "category": "Facilities" },
+    { "value": "Parking", "label": "Parking", "category": "Facilities" },
+    { "value": "Wi-Fi", "label": "Wi-Fi", "category": "Facilities" },
+    { "value": "Step-free access", "label": "Step-free access", "category": "Accessibility" }
+  ]
+}

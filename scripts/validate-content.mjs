@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { parseDocument } from 'yaml';
 import { venueSchema, amenities, ceremonyOptions } from '../src/lib/venue-schema.ts';
 import { publishedVenues } from '../src/lib/venues.ts';
+import { featureOptions } from '../src/lib/venue-features.ts';
 
 export const root = fileURLToPath(new URL('../', import.meta.url));
 function yaml(source) {
@@ -58,7 +59,11 @@ export function validateCms() {
   }
   assert.equal(byName.gallery.type, 'object');
   assert.ok(byName.gallery.list);
-  assert.deepEqual(byName.amenities.options.values, [...amenities]);
+  assert.deepEqual(byName.amenities.options.values, featureOptions);
+  assert.deepEqual(featureOptions.map(option => option.value).sort(), [...amenities].sort());
+  assert.equal(byName.amenities.options.multiple, true);
+  assert.equal(byName.fictional.hidden, true);
+  assert.equal(config.settings.config, false);
   assert.deepEqual(byName.ceremonyOptions.options.values, [...ceremonyOptions]);
   return config;
 }
