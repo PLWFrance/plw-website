@@ -4,7 +4,7 @@ slug: plw-test-venue
 published: false
 featured: false
 fictional: true
-summary: A fictional venue created to test Sarah's editing system
+summary: A fictional French wedding venue used to test editing and saving in Pages CMS
 region: Test region — fictional
 image: /images/venues/courtyard-placeholder.svg
 imageAlt: Illustration of a fictional French courtyard
