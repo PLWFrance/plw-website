@@ -15,4 +15,8 @@ gallery:
   - image: /images/venues/courtyard-placeholder.svg
     alt: Illustration of a fictional French wedding venue courtyard
     placeholder: true
+  - image: /images/venues/img0072-1024.jpg
+    alt: Test photo of a vineyard wedding venue
+    caption: Image Credit IH
+    placeholder: false
 ---
