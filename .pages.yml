@@ -2,11 +2,12 @@
 media:
   input: public/images/venues
   output: /images/venues
-  extensions: [jpg, jpeg, png, webp, avif, svg]
+  extensions: [ jpg, jpeg, png, webp, avif, svg ]
   rename: safe
 settings:
   content:
     merge: true
+  config: false
 content:
   - name: venues
     label: Wedding venues
@@ -17,42 +18,31 @@ content:
     filename: '{fields.slug}.md'
     view:
       primary: name
-      fields: [name, region, published, featured]
-      search: [name, region, location]
-      sort: [name, region, published, featured]
+      fields: [ name, region, published, featured ]
+      search: [ name, region, location ]
+      sort: [ name, region, published, featured ]
       default:
         sort: name
         order: asc
     fields:
+      # 1. Basic venue information
       - name: name
-        label: Venue name
+        label: 1. Basic venue information — Venue name (required)
         type: string
         required: true
       - name: slug
-        label: URL slug
+        label: URL slug (required)
         type: string
         required: true
-        description: 'Unique lowercase words with hyphens, e.g. maison-des-oliviers. Changing this changes the page address; ask for a redirect before renaming a published venue.'
+        description: 'Unique lowercase words with hyphens, e.g. maison-des-oliviers.
+          Changing this changes the page address; ask for a redirect before
+          renaming a published venue.'
         pattern:
           regex: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
           message: Use lowercase letters, numbers and single hyphens between words.
-      - name: published
-        label: Published in builds
-        type: boolean
-        default: false
-        description: 'Off = draft, excluded from website pages and listings. Saving still commits to GitHub. On makes it eligible for the next build; it does not deploy or publish a website.'
-      - name: featured
-        label: Featured venue
-        type: boolean
-        default: false
-        description: Featured venues appear first in the homepage venue list, but drafts stay hidden.
-      - name: fictional
-        label: Fictional sample venue
-        type: boolean
-        default: true
-        description: Leave on for all invented examples. Turn off only for verified, approved real venue content.
+      # 2. Descriptions and location
       - name: summary
-        label: Short description
+        label: 2. Descriptions and location — Short description (required)
         type: text
         required: true
         description: Plain-text introduction used on the venue page and venue card.
@@ -62,12 +52,14 @@ content:
         options:
           format: markdown
           media: false
-        description: 'Use paragraphs, headings and lists. Add photographs through the gallery below. Do not paste scripts, embedded videos or raw HTML.'
+        description: 'Use paragraphs, headings and lists. Add photographs through the
+          gallery below. Do not paste scripts, embedded videos or raw HTML.'
       - name: region
-        label: Region
+        label: Region (required)
         type: string
         required: true
-        description: Enter the verified French region, or clearly say that the setting is imagined.
+        description: Enter the verified French region, or clearly say that the setting
+          is imagined.
       - name: location
         label: Location
         type: string
@@ -78,19 +70,26 @@ content:
       - name: atmosphere
         label: Atmosphere
         type: string
+      # 3. Photographs and galleries
       - name: image
-        label: Main photograph
+        label: 3. Photographs and galleries — Main photograph (required)
         type: image
         required: true
-        description: Upload or choose an approved image. For testing, use the existing local placeholder path; never imply it depicts a real venue.
+        description: Choose an existing image or upload a compressed JPG/WebP with a
+          unique filename. Add its description below. Keep the placeholder
+          switch on for illustrations; switch it off for an approved photograph.
       - name: imageAlt
-        label: Main photograph description (alt text)
+        label: Main photograph description (alt text) (required)
         type: string
         required: true
+        description: Describe what is visible for someone who cannot see the photograph.
+          Required even for drafts.
       - name: imagePlaceholder
         label: Main image is a placeholder
         type: boolean
         default: true
+        description: On for supplied illustrations. Off only for an approved photograph of
+          this venue.
       - name: gallery
         label: Image gallery
         type: object
@@ -114,6 +113,9 @@ content:
             label: Image is a placeholder
             type: boolean
             default: true
+        description: Add one photograph per item, then its required description and
+          optional caption/credit. Expand an item to edit it; reorder items for
+          display order. Removing an item does not delete the uploaded image.
       - name: video
         label: Video
         type: object
@@ -121,7 +123,8 @@ content:
           - name: url
             label: Video URL
             type: string
-            description: 'Full HTTPS link. Displayed as a link, never embedded or automatically played.'
+            description: 'Full HTTPS link. Displayed as a link, never embedded or
+              automatically played.'
             pattern: '^(https://[^\s]+)?$'
           - name: thumbnail
             label: Video thumbnail
@@ -138,24 +141,39 @@ content:
         type: string
         pattern: '^(https://[^\s]+)?$'
         description: Optional full HTTPS link to an approved external gallery.
-      - name: facilities
-        label: Facilities
-        type: string
-        list: true
-        description: Add one confirmed facility per item. Leave unknown information blank.
+      # 4. Facilities and accommodation
       - name: amenities
-        label: Amenities
+        label: 4. Facilities and accommodation — Venue features
         type: select
         options:
           multiple: true
-          values: [Swimming pool, Parking, Wi-Fi, Step-free access]
-        description: Select only confirmed amenities; use key information for accessibility details.
+          values:
+            - value: Swimming pool
+              label: Facilities / Swimming pool
+            - value: Parking
+              label: Facilities / Parking
+            - value: Wi-Fi
+              label: Facilities / Wi-Fi
+            - value: Step-free access
+              label: Accessibility / Step-free access
+          placeholder: Search confirmed features…
+        description: Search and select all confirmed features. Categories help you find
+          them; unselected means unknown, not unavailable. The WordPress feature
+          list is awaiting import. Ask the developer for a missing choice; add
+          nuanced access details under key information.
+      - name: facilities
+        label: Other facility details
+        type: string
+        list: true
+        description: Keep existing details. Add one confirmed detail per item when a
+          catalogue choice is not enough; request a reusable feature from the
+          developer. Do not duplicate selected features.
       - name: guestCapacity
         label: Maximum wedding guests
         type: number
         options:
           min: 0
-        description: Whole number only. Leave blank if not verified; zero means none.
+        description: Verified whole number only. Blank means unknown; 0 means none.
       - name: accommodation
         label: Accommodation
         type: object
@@ -173,20 +191,31 @@ content:
           - name: details
             label: Accommodation details
             type: text
+      # 5. Ceremonies and wedding arrangements
       - name: ceremonyOptions
-        label: Ceremony options
+        label: 5. Ceremonies and wedding arrangements — Ceremony options
         type: select
         options:
           multiple: true
-          values: [Symbolic ceremony, Religious ceremony, Civil ceremony (verify legal eligibility)]
-        description: Select only verified options. Civil ceremonies in France require separate legal confirmation.
+          values:
+            [
+              Symbolic ceremony,
+              Religious ceremony,
+              Civil ceremony (verify legal eligibility)
+            ]
+        description: Select only verified options. Civil ceremonies in France require
+          separate legal confirmation.
       - name: ceremonyDetails
         label: Ceremony details
         type: text
+      # 6. Key information and special offers
       - name: keyInformation
-        label: Key information
+        label: 6. Key information and special offers — Key information
         type: object
-        list: true
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{fields.label}"
         fields:
           - name: label
             label: Heading
@@ -203,8 +232,12 @@ content:
       - name: specialOffers
         label: Special offers
         type: object
-        list: true
-        description: Only approved, current offers. Remove expired offers manually; nothing expires automatically.
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{fields.title}"
+        description: Only approved, current offers. Remove expired offers manually;
+          nothing expires automatically.
         fields:
           - name: title
             label: Offer heading
@@ -214,15 +247,45 @@ content:
             label: Offer details and terms
             type: text
             required: true
+      # 7. SEO and publishing
       - name: seo
-        label: Search engine information
+        label: 7. SEO and publishing — Search engine information
         type: object
         fields:
           - name: title
             label: SEO title
             type: string
-            description: Optional. Falls back to the venue name; the website adds the PLW name.
+            description: Optional. Falls back to the venue name; the website adds the PLW
+              name.
           - name: description
             label: SEO description
             type: text
-            description: Optional. Falls back to the short description. Prototype pages remain noindex.
+            description: Optional. Falls back to the short description. Prototype pages
+              remain noindex.
+        description: "Optional: leave blank to use the venue name and short description.
+          These fields do not affect draft status. Prototype pages remain
+          excluded from search engines."
+      - name: published
+        label: Include on website
+        type: boolean
+        default: false
+        description: 'Off = draft (safe starting point). On = include in the next build
+          of this branch. Save records your work in GitHub. Changes saved on
+          main may trigger the connected Cloudflare deployment; use the agreed
+          review branch.'
+      - name: featured
+        label: Featured venue
+        type: boolean
+        default: false
+        description: Featured venues appear first in the homepage venue list, but drafts
+          stay hidden.
+      - name: fictional
+        label: Fictional sample venue
+        type: boolean
+        default: true
+        description: Developer-managed safety flag. Defaults to fictional; a developer
+          must verify real content before changing this in GitHub.
+        hidden: true
+    description: Use the agreed review branch. Complete the fields marked required, save as
+      a draft, then request a rendered preview and approval. Saving to main can
+      trigger the connected website deployment.

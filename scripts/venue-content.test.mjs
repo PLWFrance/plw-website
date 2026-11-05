@@ -6,6 +6,7 @@ import { spawnSync } from 'node:child_process';
 import { stringify } from 'yaml';
 import { venueSchema } from '../src/lib/venue-schema.ts';
 import { publishedVenues, venueSlug } from '../src/lib/venues.ts';
+import { featureCatalogue, featureCatalogueSchema } from '../src/lib/venue-features.ts';
 import { root, readVenue, validateContent, validateCms } from './validate-content.mjs';
 
 const sample = readVenue(resolve(root, 'src/content/venues/maison-des-oliviers.md')).raw;
@@ -20,6 +21,28 @@ test('omitted status is a draft; original fields remain compatible', () => {
   assert.equal(data.published, false);
   assert.deepEqual(data.gallery, []);
   assert.equal(venueSlug({ id: 'legacy-name', data }), 'legacy-name');
+});
+test('feature catalogue preserves legacy multiple selections and rejects unreviewed terms', () => {
+  const legacy = ['Swimming pool', 'Parking', 'Wi-Fi', 'Step-free access'];
+  assert.deepEqual(venueSchema.parse({ ...sample, amenities: legacy }).amenities, legacy);
+  assert.deepEqual(venueSchema.parse({ ...sample, amenities: null }).amenities, []);
+  assert.equal(venueSchema.safeParse({ ...sample, amenities: ['Unreviewed feature'] }).success, false);
+  const feature = featureCatalogue.features[0];
+  for (const features of [
+    [...featureCatalogue.features, feature],
+    [{ ...feature, category: 'Missing category' }],
+    [{ ...feature, wordpress: { taxonomy: 'features', termId: 0, slug: 'pool' } }],
+    [
+      { ...feature, wordpress: { taxonomy: 'features', termId: 1, slug: 'pool' } },
+      { ...feature, value: 'Another value', wordpress: { taxonomy: 'features', termId: 1, slug: 'pool' } },
+    ],
+  ]) assert.equal(featureCatalogueSchema.safeParse({ ...featureCatalogue, features }).success, false);
+  // A reviewed catalogue extension needs no changes to the existing venue record shape.
+  assert.equal(featureCatalogueSchema.safeParse({ ...featureCatalogue, features: [
+    ...featureCatalogue.features,
+    { value: 'Fictional import fixture', label: 'Fictional import fixture', category: 'Activities',
+      wordpress: { taxonomy: 'test-only', termId: 123, slug: 'fictional-import-fixture' } },
+  ] }).success, true);
 });
 test('drafts stay hidden even when featured; featured published venues sort first', () => {
   const entry = (id, published, featured) => ({ id, data: { name: id, published, featured } });
