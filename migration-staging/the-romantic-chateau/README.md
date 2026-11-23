@@ -42,29 +42,18 @@ WordPress status: published; staged Astro status remains `published: false`.
 
 ## Photographs and validation gate
 
-The manifest contains the featured image (attachment 14151, `Romantic.jpg`) followed
-by the first 20 gallery photographs in their original CSV/JSON order (source positions
-2–21). Proposed filenames are deterministic, safe suggestions derived from the source
-basename and attachment ID; **no files with these names exist yet**. They are not image
-references in the staged Markdown. Future storage: `public/images/venues/`; future
-references: `/images/venues/` plus the approved filename.
+Photograph preparation is now recorded in [photo-preparation-status.md](photo-preparation-status.md).
+The supplied cleaned ZIP contains the featured image and 19 unique gallery images;
+original attachment 13972 was omitted as a reported duplicate. The current manifest
+contains actual WebP paths and original positions. The earlier 21-image selection is
+preserved in `original-image-selection.csv` and all 73 original references remain in
+`source-record.json`. The 20 supplied images are optimised under `public/images/venues/`.
 
-No photographs were downloaded. The required `image` and `imageAlt` are intentionally
-absent, and `gallery` remains empty until images exist and are reviewed. This staged
-Markdown is therefore deliberately incomplete and must not be copied into the live
-collection yet. No fake filenames, placeholder photographs or invented alt text were
-used to satisfy validation. Of the selected 21 images, only gallery item 16 has source
-alt text (`Small wedding multiple beds`); verify it visually. All other selected alt
-text, including the featured image, is missing. Captions/credits and rights evidence
-are absent. Selected attachment IDs 14831 and 13972 are marked absent from the XML
-used to prepare the archive. All selected URLs exist as strings; availability is untested.
-
-Before activation: obtain and inspect approved image files, resize/compress them,
-confirm filenames and order, write accurate alt text, add actual local references,
-and set photograph placeholder flags to false. Approve the summary, region/location,
-source prices (including guest contributions), inclusions and ceremony claims. Keep
-`published: false` throughout preparation. Run content validation/check/tests/build
-again after adding the complete entry. No schema relaxation is necessary.
+No approved alt text or image rights have been supplied. Review `alt-text-review.csv`,
+then populate the staged venue's required image/alt and ordered gallery entries using
+actual paths. Do not move this record into `src/content/venues/` until it fully validates.
+Approve the summary, region/location, source prices and inclusions, and ceremony claims;
+keep `published: false` throughout preparation. No schema relaxation is needed.
 
 ## Original classifications
 
