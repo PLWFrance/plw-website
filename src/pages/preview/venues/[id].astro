@@ -1,0 +1,20 @@
+---
+import { getEntry, render } from 'astro:content';
+import VenueLayout from '../../../layouts/VenueLayout.astro';
+
+export async function getStaticPaths() {
+  // Static production builds get no preview pages, regardless of branch or env vars.
+  if (!import.meta.env.DEV) return [];
+
+  // An explicit source ID and slug allowlist: never expose the whole draft collection.
+  const venue = await getEntry('venues', 'the-romantic-chateau');
+  if (!venue || venue.data.slug !== 'the-romantic-chateau') return [];
+  return [{ params: { id: 'the-romantic-chateau' }, props: { venue } }];
+}
+
+// Defence in depth if the route is ever changed to render on demand.
+if (!import.meta.env.DEV) return new Response(null, { status: 404 });
+const { venue } = Astro.props;
+const { Content } = await render(venue);
+---
+<VenueLayout venue={venue} preview><Content /></VenueLayout>

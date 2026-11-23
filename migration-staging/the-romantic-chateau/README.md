@@ -116,6 +116,6 @@ Content validation now covers both the fictional sample and the complete unpubli
 Romantic Château record; only the sample is eligible for generated pages. Astro checks,
 all six existing tests and build pass. Image paths, order, real/draft flags and unchanged
 Markdown body were separately checked. Development and build both exclude the draft.
-See `testing-and-preview.md` for results and the proposed local-only preview route.
+See `testing-and-preview.md` for results and the implemented local-only preview route.
 The original 21-image selection and all 27 feature labels remain preserved as evidence;
 the current image manifest contains the cleaned 20-photo selection.

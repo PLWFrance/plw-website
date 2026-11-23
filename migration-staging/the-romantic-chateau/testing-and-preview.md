@@ -45,39 +45,51 @@ content validation establish compatibility, not authenticated hosted UI acceptan
 There is no configured CMS button or integration for rendering an unpublished draft.
 Draft source and public assets are not confidential.
 
-## Rendered preview limitation and proposed change
+## Development-only rendered preview
 
-`src/pages/venues/[id].astro` passes collection entries through `publishedVenues`,
-which excludes `published: false` entries. The homepage uses the same filter.
-Consequently **no rendered preview route is currently available**, in either
-`astro dev` or the production build. `/venues/the-romantic-chateau/` is the eventual
-public route after approval, but currently must return 404. `astro preview` only
-serves the built files and cannot reveal this excluded entry. A public branch
-preview deployment would also exclude it. No publication behaviour was changed.
+The approved preview is now implemented at:
 
-Smallest proposed safe change (not implemented, awaiting approval): add a separate
-`/preview/venues/[id]/` route that renders drafts only when `import.meta.env.DEV`
-is true, with `getStaticPaths()` returning no routes during production builds.
-Keep the existing published route and homepage filtering untouched; include a
-visible draft banner, no indexing and no public navigation links. Proposed local
-URL: `http://localhost:4321/preview/venues/the-romantic-chateau/` (use the actual
-port printed by Astro). This URL is **a proposal, not a working route**.
-Acceptance checks should prove that a local draft renders and production output
-contains neither preview pages nor this unpublished public venue route. This would
-provide local rendering only; shared/private CMS previews need a separately agreed
-hosting and access workflow.
+`http://localhost:4321/preview/venues/the-romantic-chateau/`
 
-## Verification performed
+Check out `migration/the-romantic-chateau`, install dependencies with `npm ci` if
+needed, then run `npm run dev` from the repository root. Use the port Astro prints
+if 4321 is occupied. No environment variables or additional CMS configuration are
+required. The dev server should stay bound to loopback for local review. This is a
+local development preview, not a hosted or authenticated preview service.
 
-- Content validator: 2 venue records valid, only the fictional sample eligible for builds.
-- Astro checks: zero errors, warnings or hints.
-- Existing test suite: all six tests passed.
-- Static build: passed, no Romantic Château route or homepage link.
-- Direct schema/order check: 20 correct local image paths, non-empty alt text,
-  `published: false`, `fictional: false`; original Markdown body is byte-for-byte unchanged.
-- Local Astro development server: `/venues/the-romantic-chateau/` returned 404;
-  `/venues/maison-des-oliviers/` returned 200, confirming the server is working and
-  draft filtering applies in development as well as the build.
+The route reuses `VenueLayout.astro`, the same Markdown renderer, media component
+and global styling as the published venue detail page. It adds a visible draft
+banner. `BaseLayout.astro` retains the prototype's `noindex, nofollow` robots meta
+on both normal and preview pages. No public navigation link was added.
 
-The proposed preview change was not implemented. No publication or CMS configuration
-was changed; no hosted CMS credentials were requested or used.
+`getStaticPaths()` returns paths only with `import.meta.env.DEV`. It retrieves only
+the exact source ID `the-romantic-chateau` and verifies the exact slug; it never
+lists the collection or accepts an arbitrary requested venue. The rendering code
+also returns 404 outside development as defence in depth. Production builds,
+including branch builds and `astro preview`, have no preview page. No environment
+flag can enable it in a production build. Access-controlled hosted previews remain
+out of scope; do not expose the development server as a public preview service.
+
+The ordinary public route `/venues/the-romantic-chateau/` remains excluded by the
+unchanged `publishedVenues` filter, and the homepage has no draft link. The venue
+remains `published: false`, `fictional: false`. Pages CMS can edit the draft on this
+branch; no automatic CMS preview button was added. Open the development URL
+separately to inspect edits. No publication status needs changing.
+
+## Verification
+
+- Content validator and Astro checks pass; the record is a real unpublished draft.
+- Development HTTP checks: the approved preview returns 200, with draft banner,
+  complete Markdown description, 20 image elements with alt text and
+  `noindex, nofollow`. The sample venue and an unknown slug return 404 under the
+  preview route. The unpublished public venue route still returns 404.
+- Production-build integration tests assert the approved preview HTML is absent,
+  the public draft HTML is absent and no preview link appears on the homepage.
+  The existing test fixture also verifies other drafts remain unpublished.
+- An additional real draft fixture was checked against the development preview:
+  it returns 404 even though it is present in the collection.
+- Normal production output is served separately to verify the preview URL returns
+  404 while the homepage returns 200.
+
+No publication filtering, CMS configuration, content status or indexing protection
+was changed. No merge or deployment was performed.

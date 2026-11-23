@@ -86,6 +86,9 @@ test('builds render CMS-shaped records and exclude drafts, including after unpub
   const build = () => {
     const result = spawnSync('npm', ['run', 'build'], { cwd: root, env: { ...process.env, ASTRO_TELEMETRY_DISABLED: '1' }, encoding: 'utf8' });
     assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.ok(!existsSync(resolve(root, 'dist/preview/venues/the-romantic-chateau/index.html')), 'Development preview must never be built');
+    assert.ok(!existsSync(resolve(root, 'dist/venues/the-romantic-chateau/index.html')), 'Real draft must stay unpublished');
+    assert.ok(!readFileSync(resolve(root, 'dist/index.html'), 'utf8').includes('/preview/'), 'No preview navigation in production');
   };
   try {
     write(fixturePath, fixture);
