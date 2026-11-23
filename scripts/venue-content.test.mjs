@@ -5,6 +5,7 @@ import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { stringify } from 'yaml';
 import { venueSchema } from '../src/lib/venue-schema.ts';
+import { venuePreviewEnabled } from '../src/lib/venue-preview.ts';
 import { publishedVenues, venueSlug } from '../src/lib/venues.ts';
 import { featureCatalogue, featureCatalogueSchema } from '../src/lib/venue-features.ts';
 import { root, readVenue, validateContent, validateCms } from './validate-content.mjs';
@@ -84,8 +85,11 @@ test('builds render CMS-shaped records and exclude drafts, including after unpub
   };
   const write = (path, data) => writeFileSync(path, `---\n${stringify(data)}---\n\n## Fictional rich-text heading\n\nA **formatted** test description.\n`);
   const build = () => {
-    const result = spawnSync('npm', ['run', 'build'], { cwd: root, env: { ...process.env, ASTRO_TELEMETRY_DISABLED: '1' }, encoding: 'utf8' });
+    const result = spawnSync('npm', ['run', 'build'], { cwd: root, env: { ...process.env, ASTRO_TELEMETRY_DISABLED: '1', ENABLE_VENUE_PREVIEW: '', CF_PAGES_BRANCH: '' }, encoding: 'utf8' });
     assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.ok(!existsSync(resolve(root, 'dist/preview/venues/the-romantic-chateau/index.html')), 'Ordinary production must not build the venue preview');
+    assert.ok(!existsSync(resolve(root, 'dist/venues/the-romantic-chateau/index.html')), 'Real draft must stay unpublished');
+    assert.ok(!readFileSync(resolve(root, 'dist/index.html'), 'utf8').includes('/preview/'), 'No preview navigation in production');
   };
   try {
     write(fixturePath, fixture);
@@ -106,5 +110,53 @@ test('builds render CMS-shaped records and exclude drafts, including after unpub
   } finally {
     rmSync(fixturePath, { force: true }); rmSync(draftPath, { force: true });
     build(); // Leave a clean production build with only the real repository content.
+  }
+});
+
+
+test('venue preview requires development or an exact enabled branch', () => {
+  assert.equal(venuePreviewEnabled(true, {}), true);
+  assert.equal(venuePreviewEnabled(false, {}), false);
+  for (const ENABLE_VENUE_PREVIEW of ['', 'false', 'TRUE', '1', 'true '])
+    assert.equal(venuePreviewEnabled(false, { ENABLE_VENUE_PREVIEW, CF_PAGES_BRANCH: 'migration/the-romantic-chateau' }), false);
+  for (const CF_PAGES_BRANCH of ['', 'main', 'other-branch', 'migration/the-romantic-chateau-extra'])
+    assert.equal(venuePreviewEnabled(false, { ENABLE_VENUE_PREVIEW: 'true', CF_PAGES_BRANCH }), false);
+  assert.equal(venuePreviewEnabled(false, { ENABLE_VENUE_PREVIEW: 'true', CF_PAGES_BRANCH: 'migration/the-romantic-chateau' }), true);
+});
+
+test('hosted preview builds expose only the allowed real draft and stay out of production', () => {
+  const fixturePath = resolve(root, 'src/content/venues/cms-preview-other-draft.md');
+  assert.ok(!existsSync(fixturePath), 'Refuse to overwrite content');
+  const previewPath = resolve(root, 'dist/preview/venues/the-romantic-chateau/index.html');
+  const build = (ENABLE_VENUE_PREVIEW = '', CF_PAGES_BRANCH = '') => {
+    const result = spawnSync('npm', ['run', 'build'], {
+      cwd: root, encoding: 'utf8',
+      env: { ...process.env, ASTRO_TELEMETRY_DISABLED: '1', ENABLE_VENUE_PREVIEW, CF_PAGES_BRANCH },
+    });
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+  };
+  try {
+    writeFileSync(fixturePath, `---\n${stringify({ ...sample, slug: 'cms-preview-other-draft', published: false })}---\n\nUnapproved draft fixture.\n`);
+    for (const [flag, branch] of [['', 'migration/the-romantic-chateau'], ['true', 'main'], ['true', 'other-branch']]) {
+      build(flag, branch);
+      assert.ok(!existsSync(previewPath), `Preview exposed for flag=${flag}, branch=${branch}`);
+    }
+    build('true', 'migration/the-romantic-chateau');
+    const html = readFileSync(previewPath, 'utf8');
+    assert.ok(html.includes('Draft preview') && html.includes('Not published'));
+    assert.ok(/<meta[^>]+name="robots"[^>]+content="noindex, nofollow"/.test(html));
+    const data = venueSchema.parse(readVenue(resolve(root, 'src/content/venues/the-romantic-chateau.md')).raw);
+    assert.equal(data.published, false); assert.equal(data.fictional, false);
+    for (const image of [data.image, ...data.gallery.map(item => item.image)]) assert.ok(html.includes(image));
+    assert.ok(html.includes('Dance under the stars!'));
+    assert.ok(!existsSync(resolve(root, 'dist/preview/venues/cms-preview-other-draft/index.html')));
+    assert.ok(!existsSync(resolve(root, 'dist/preview/venues/maison-des-oliviers/index.html')));
+    assert.ok(!existsSync(resolve(root, 'dist/venues/the-romantic-chateau/index.html')));
+    const home = readFileSync(resolve(root, 'dist/index.html'), 'utf8');
+    assert.ok(!home.includes('/preview/') && !home.includes('/venues/the-romantic-chateau/'));
+  } finally {
+    rmSync(fixturePath, { force: true });
+    build();
+    assert.ok(!existsSync(previewPath), 'Leave an ordinary production build without previews');
   }
 });
