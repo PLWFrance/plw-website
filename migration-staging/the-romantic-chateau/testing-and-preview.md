@@ -45,51 +45,93 @@ content validation establish compatibility, not authenticated hosted UI acceptan
 There is no configured CMS button or integration for rendering an unpublished draft.
 Draft source and public assets are not confidential.
 
-## Development-only rendered preview
+## Local development preview
 
-The approved preview is now implemented at:
+Check out `migration/the-romantic-chateau`, run `npm ci` if needed, then `npm run dev`.
+The route is `/preview/venues/the-romantic-chateau/` on the port Astro prints.
+No flag is required in development. A localhost address is local to the Cloud machine;
+it is not a browser-accessible Codex proxy link. This environment previously exposed
+no HTTP portal, so use the protected Cloudflare preview for remote review.
 
-`http://localhost:4321/preview/venues/the-romantic-chateau/`
+## Protected Cloudflare branch build
 
-Check out `migration/the-romantic-chateau`, install dependencies with `npm ci` if
-needed, then run `npm run dev` from the repository root. Use the port Astro prints
-if 4321 is occupied. No environment variables or additional CMS configuration are
-required. The dev server should stay bound to loopback for local review. This is a
-local development preview, not a hosted or authenticated preview service.
+The owner confirmed Pages is connected to `PLWFrance/plw-website`, production branch
+`main`, build command `npm run build`, output `dist`. The owner also confirmed that
+Cloudflare Access protects `*.plw-website-1kh.pages.dev` with an email allow policy.
+These are owner-confirmed settings, not account settings inspected by this task.
 
-The route reuses `VenueLayout.astro`, the same Markdown renderer, media component
-and global styling as the published venue detail page. It adds a visible draft
-banner. `BaseLayout.astro` retains the prototype's `noindex, nofollow` robots meta
-on both normal and preview pages. No public navigation link was added.
+In Cloudflare Pages project settings, set `ENABLE_VENUE_PREVIEW=true` for the
+**Preview environment only**. Leave this variable absent/false in Production.
+Cloudflare supplies `CF_PAGES_BRANCH`; do not override it. The build gate requires
+both exact string comparisons:
 
-`getStaticPaths()` returns paths only with `import.meta.env.DEV`. It retrieves only
-the exact source ID `the-romantic-chateau` and verifies the exact slug; it never
-lists the collection or accepts an arbitrary requested venue. The rendering code
-also returns 404 outside development as defence in depth. Production builds,
-including branch builds and `astro preview`, have no preview page. No environment
-flag can enable it in a production build. Access-controlled hosted previews remain
-out of scope; do not expose the development server as a public preview service.
+- `ENABLE_VENUE_PREVIEW === 'true'`
+- `CF_PAGES_BRANCH === 'migration/the-romantic-chateau'`
 
-The ordinary public route `/venues/the-romantic-chateau/` remains excluded by the
-unchanged `publishedVenues` filter, and the homepage has no draft link. The venue
-remains `published: false`, `fictional: false`. Pages CMS can edit the draft on this
-branch; no automatic CMS preview button was added. Open the development URL
-separately to inspect edits. No publication status needs changing.
+Both `getStaticPaths()` and the rendering guard use the same helper. Ordinary builds,
+`main` even with the flag set, and other branches with the flag set do not generate
+this route. Only the exact source ID and slug `the-romantic-chateau` are allowed;
+no other draft is enumerated. Local development remains allowed independently.
+Do not force development mode for a Cloudflare build.
 
-## Verification
+Cloudflare Access **must remain enabled before the flagged build is published**.
+The flag/branch check is a build-output gate, not authentication. The generated
+preview HTML and image assets are static; Access must protect all paths on both the
+branch alias and immutable deployment-hash hostnames. Keep the unprefixed production
+hostname and custom production domains out of this draft-preview workflow. If Access
+is removed or bypassed, a previously generated preview can become public even if a
+later build disables the flag. Retire older preview deployments when review ends.
 
-- Content validator and Astro checks pass; the record is a real unpublished draft.
-- Development HTTP checks: the approved preview returns 200, with draft banner,
-  complete Markdown description, 20 image elements with alt text and
-  `noindex, nofollow`. The sample venue and an unknown slug return 404 under the
-  preview route. The unpublished public venue route still returns 404.
-- Production-build integration tests assert the approved preview HTML is absent,
-  the public draft HTML is absent and no preview link appears on the homepage.
-  The existing test fixture also verifies other drafts remain unpublished.
-- An additional real draft fixture was checked against the development preview:
-  it returns 404 even though it is present in the collection.
-- Normal production output is served separately to verify the preview URL returns
-  404 while the homepage returns 200.
+The deployment must be classified as **Preview**, from the migration branch, never
+promoted to production. Retain `main` as the production branch. If branch previews
+are disabled, include `migration/the-romantic-chateau` in preview branch controls.
+Pushing this branch may trigger Pages automatically; no manual deployment or merge
+is part of this task. The venue remains `published: false`, `fictional: false`.
 
-No publication filtering, CMS configuration, content status or indexing protection
-was changed. No merge or deployment was performed.
+Open the actual successful Cloudflare Preview deployment URL, then append:
+
+`/preview/venues/the-romantic-chateau/`
+
+For the branch alias, the expected form is
+`https://migration-the-romantic-chateau.plw-website-1kh.pages.dev/preview/venues/the-romantic-chateau/`.
+Confirm the actual alias in Cloudflare before sharing; this task has not deployed
+or verified that address. Owners need their email addresses added to the Access
+allow policy before they can review; currently only the account owner's email was
+reported as allowed. Verify a logged-out browser is challenged and an allowed login
+can open the page and all photographs. The deployment-hash URL must also challenge.
+
+## Layout and publication protection
+
+The route reuses `VenueLayout.astro`, the normal Markdown renderer, image component
+and styling. The banner reads `Draft preview · For review only · Not published ·
+Content awaiting approval` so it fits local and protected hosted review.
+`BaseLayout.astro` retains `noindex, nofollow` on the prototype and preview pages.
+No navigation links are added. The regular public venue route and homepage keep
+using the unchanged publication filter; the draft stays excluded from both.
+Pages CMS can edit the record on the migration branch; no preview button is added.
+
+Cloudflare Access protects the review website, not source/images already stored in
+the public GitHub repository. The remaining editorial checks still apply.
+
+## Validation matrix
+
+The automated suite checks the exact string gate, development allowance, and actual
+build output for missing flag on the correct branch, enabled flag on `main`, enabled
+flag on another branch, and the explicitly enabled correct branch. An extra draft
+fixture stays inaccessible even in the enabled build. Enabled HTML is checked for
+the banner, robots metadata, venue body and all 20 correct image paths. The normal
+public draft route and homepage remain unpublished in all configurations. A final
+ordinary production build restores output without the preview page.
+
+No Cloudflare settings were changed by this task and no manual deployment or merge
+was performed. Authentication itself must be verified in Cloudflare after its build.
+
+### Results for this change
+
+Content validation passed (2 records, 1 eligible for public builds). Astro check
+reported zero errors, warnings or hints. All 8 tests passed, including real builds
+for disabled/mismatched/enabled configurations. Separate enabled-preview and
+ordinary production builds both passed; the former contained the preview HTML and
+the latter did not. Local development returned HTTP 200 with the draft banner,
+venue body and robots protection. Publication flags were unchanged. The working
+build output was left in normal production mode without the preview route.

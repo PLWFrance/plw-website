@@ -1,10 +1,15 @@
 ---
 import { getEntry, render } from 'astro:content';
 import VenueLayout from '../../../layouts/VenueLayout.astro';
+import { venuePreviewEnabled } from '../../../lib/venue-preview';
 
 export async function getStaticPaths() {
-  // Static production builds get no preview pages, regardless of branch or env vars.
-  if (!import.meta.env.DEV) return [];
+  // Hosted preview output requires both the explicit flag and the exact branch.
+  // Cloudflare Access must protect the resulting static page and its assets.
+  if (!venuePreviewEnabled(import.meta.env.DEV, {
+    ENABLE_VENUE_PREVIEW: import.meta.env.ENABLE_VENUE_PREVIEW,
+    CF_PAGES_BRANCH: import.meta.env.CF_PAGES_BRANCH,
+  })) return [];
 
   // An explicit source ID and slug allowlist: never expose the whole draft collection.
   const venue = await getEntry('venues', 'the-romantic-chateau');
@@ -13,7 +18,10 @@ export async function getStaticPaths() {
 }
 
 // Defence in depth if the route is ever changed to render on demand.
-if (!import.meta.env.DEV) return new Response(null, { status: 404 });
+if (!venuePreviewEnabled(import.meta.env.DEV, {
+    ENABLE_VENUE_PREVIEW: import.meta.env.ENABLE_VENUE_PREVIEW,
+    CF_PAGES_BRANCH: import.meta.env.CF_PAGES_BRANCH,
+  })) return new Response(null, { status: 404 });
 const { venue } = Astro.props;
 const { Content } = await render(venue);
 ---

@@ -7,7 +7,7 @@ const { venue: { data }, preview = false } = Astro.props;
 ---
 <BaseLayout title={data.seo.title || `${data.name}${data.fictional ? ' — fictional sample' : ''}`} description={data.seo.description || data.summary}>
   <article class="wrap venue-detail">
-    {preview && <p class="prototype-note" role="note">Draft preview · Development only · Not published · Content awaiting approval</p>}
+    {preview && <p class="prototype-note" role="note">Draft preview · For review only · Not published · Content awaiting approval</p>}
     <a class="text-link" href="/#venues">← Back to venues</a>
     <header class="venue-title">
       {data.fictional && <span class="tag">Fictional sample venue · Not available to book</span>}
