@@ -1,8 +1,9 @@
 # The Romantic Château — migration staging
 
-This directory prepares only this venue. Nothing here is loaded by Astro or published.
-The intended destination after media and editorial review is
-`src/content/venues/the-romantic-chateau.md`.
+This directory retains migration evidence and editorial review notes. The venue record
+now lives at `src/content/venues/the-romantic-chateau.md`, with `published: false`
+and `fictional: false`. It is editable as a draft in Pages CMS on this branch.
+See `testing-and-preview.md` for current testing and preview limitations.
 
 ## Provenance
 
@@ -49,11 +50,11 @@ contains actual WebP paths and original positions. The earlier 21-image selectio
 preserved in `original-image-selection.csv` and all 73 original references remain in
 `source-record.json`. The 20 supplied images are optimised under `public/images/venues/`.
 
-No approved alt text or image rights have been supplied. Review `alt-text-review.csv`,
-then populate the staged venue's required image/alt and ordered gallery entries using
-actual paths. Do not move this record into `src/content/venues/` until it fully validates.
-Approve the summary, region/location, source prices and inclusions, and ceremony claims;
-keep `published: false` throughout preparation. No schema relaxation is needed.
+Alt text has now been prepared from visual inspection and connected to the venue record;
+`alt-text-review.csv` retains source wording, prepared wording and editorial review flags.
+Editorial approval and image rights remain outstanding. The summary, region/location,
+source prices/inclusions and ceremony claims still need approval. The complete venue
+now validates in the live collection but remains unpublished. No schema changes were made.
 
 ## Original classifications
 
@@ -111,16 +112,10 @@ venue to complete this record.
 
 ## Validation performed
 
-- `npm run validate:content`: passed for the unchanged live collection.
-- `npm run check`: passed with no errors, warnings or hints.
-- `npm test`: passed (existing schema and build integration suite).
-- `npm run build`: passed; no Romantic Château route generated.
-- Direct staged-frontmatter schema check: exactly `image` and `imageAlt` are missing;
-  all supplied fields validate. The full site checks intentionally do not load staging.
-- Source comparison: every original HTML text segment appears in the Markdown body
-  in source order; the manifest's 21 attachment IDs and URLs exactly match the first
-  21 source image entries; all 27 feature labels are retained in these notes.
-
-Dependencies were installed with a writable temporary npm cache; Astro telemetry was
-turned off for checks because the default home-directory config path is unwritable.
-No dependency or application configuration was changed.
+Content validation now covers both the fictional sample and the complete unpublished
+Romantic Château record; only the sample is eligible for generated pages. Astro checks,
+all six existing tests and build pass. Image paths, order, real/draft flags and unchanged
+Markdown body were separately checked. Development and build both exclude the draft.
+See `testing-and-preview.md` for results and the proposed local-only preview route.
+The original 21-image selection and all 27 feature labels remain preserved as evidence;
+the current image manifest contains the cleaned 20-photo selection.

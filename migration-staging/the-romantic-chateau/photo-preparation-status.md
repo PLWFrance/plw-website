@@ -41,20 +41,16 @@ full display size before launch. Portrait images retain their original orientati
 File names retain the venue identifier, attachment ID and source basename, rather
 than introducing unverified scene labels.
 
-## Alt text and publication
+## Alt text and publication — updated for CMS testing
 
-`alt-text-review.csv` lists all 20 images with local paths, original URLs and order.
-Nineteen lack source alt text; current gallery item 15 (original gallery item 16,
-attachment 12271) retains `Small wedding multiple beds` as unapproved source text.
-That wording is not a reviewed descriptive alternative. Approved alt text remains
-blank for every photograph; no new alt descriptions were written or attached.
-Rights/credits also remain unverified.
-
-The staged venue stays outside the live collection, with `published: false`, missing
-required `image` and `imageAlt`, and no populated gallery. Photographs are recorded
-in the manifest only until alt text and content are approved. The site schema has
-not been relaxed. Files in public/ are copied by builds even without venue references;
-this does not itself publish a venue page. No merge or deployment was performed.
+All 20 photographs now have visually prepared alt text in the actual venue record.
+`alt-text-review.csv` preserves source alt text and the prepared wording for review;
+its approved-alt column stays blank pending human editorial approval. Building use,
+architectural period, room capacity and ceremony eligibility are not inferred from
+images. Rights/credits remain unverified. The record now lives in
+`src/content/venues/the-romantic-chateau.md`, with `published: false` and
+`fictional: false`; all correct local paths are connected in manifest order.
+See `testing-and-preview.md` for draft editing and preview limits.
 
 ## Validation
 
@@ -62,4 +58,4 @@ Content validation, Astro/TypeScript check (zero errors, warnings or hints), all
 existing tests, and the final static build passed. A separate asset check reopened
 all 20 final WebPs, checked their dimensions/checksums and safe local paths, and
 verified their built copies byte-for-byte. No Romantic Château route was generated.
-These checks do not approve alt text, venue facts, image rights or origin URLs.
+These checks do not constitute editorial approval of alt text, venue facts, image rights or origin URLs.
